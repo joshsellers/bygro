@@ -3,6 +3,8 @@
 
 #include <string>
 #include <memory>
+#include <vector>
+#include "Util.h"
 
 class Expression {
 public:
@@ -23,9 +25,9 @@ private:
     std::string value;
 };
 
-class MathExpression : public Expression {
+class BinaryExpression : public Expression {
 public:
-    MathExpression(std::shared_ptr<Expression> left, std::shared_ptr<Expression> right, std::string operation)
+    BinaryExpression(std::shared_ptr<Expression> left, std::shared_ptr<Expression> right, std::string operation)
         : left(left),
           right(right),
           operation(operation) {}
@@ -48,41 +50,89 @@ public:
     {}
 
     virtual std::string evaluate() {
-        return "ASSIGN:" + variableName->evaluate() + ":" + assignment->evaluate();
+        std::string variableString = variableName->evaluate();
+        std::string outputString = ":ASSIGN:" + variableString;
+        if (splitString(variableString, ":")[1] == "if") {
+            outputString = ":IF";
+        }
+        return assignment->evaluate() + outputString;
     }
 private:
     std::shared_ptr<Expression> variableName;
     std::shared_ptr<Expression> assignment;
 };
 
-class EngineFunctionExpression : public Expression {
+class UnaryExpression : public Expression {
 public:
-    EngineFunctionExpression(std::shared_ptr<Expression> function, std::shared_ptr<Expression> parameters) 
-        : function(function),
-          parameters(parameters)
+    UnaryExpression(std::string op, std::shared_ptr<Expression> expression)
+        : op(op),
+          expression(expression)
     {}
 
     virtual std::string evaluate() {
-        return parameters->evaluate() + ":ENFUNC:" + function->evaluate();
+        return expression->evaluate() + ":UNARY:" + op;
     }
 private:
-    std::shared_ptr<Expression> function;
-    std::shared_ptr<Expression> parameters;
+    std::string op;
+    std::shared_ptr<Expression> expression;
 };
 
-class ParameterExpression : public Expression {
+class GameFuncExpression : public Expression {
 public:
-    ParameterExpression(std::shared_ptr<Expression> previousParameter, std::shared_ptr<Expression> nextParameter)
-        : previousParameter(previousParameter),
-          nextParameter(nextParameter)
+    GameFuncExpression(std::shared_ptr<Expression> funcName, std::vector<std::shared_ptr<Expression>> parameters)
+        : funcName(funcName),
+          parameters(parameters) {
+    }
+
+    virtual std::string evaluate() {
+        std::string output = "";
+        for (auto& parameter : parameters) {
+            output += parameter->evaluate() + ":";
+        }
+        return output + splitString(funcName->evaluate(), ":")[1];
+    }
+private:
+    std::shared_ptr<Expression> funcName;
+    std::vector<std::shared_ptr<Expression>> parameters;
+};
+
+class BlockExpression : public Expression {
+public:
+    BlockExpression(std::shared_ptr<Expression> firstStatement)
+        : firstStatement(firstStatement)
     {}
 
     virtual std::string evaluate() {
-        return nextParameter->evaluate() + ":" + previousParameter->evaluate();
+        return firstStatement->evaluate();
     }
 private:
-    std::shared_ptr<Expression> previousParameter;
-    std::shared_ptr<Expression> nextParameter;
+    std::shared_ptr<Expression> firstStatement;
+};
+
+class StatementExpression : public Expression {
+public:
+    StatementExpression(std::shared_ptr<Expression> root)
+        : root(root)
+    {}
+
+    virtual std::string evaluate() {
+        std::string output = root->evaluate();
+    }
+private:
+    std::shared_ptr<Expression> root;
+};
+
+class EndIfExpression : public Expression {
+public:
+    EndIfExpression(std::shared_ptr<Expression> previousStatement)
+        : previousStatement(previousStatement)
+    {}
+
+    virtual std::string evaluate() {
+        return previousStatement->evaluate() + ":ENDIF";
+    }
+private:
+    std::shared_ptr<Expression> previousStatement;
 };
 
 #endif

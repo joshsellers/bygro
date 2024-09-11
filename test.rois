@@ -1,0 +1,12 @@
+game.removeItem("rifle round", 5 - 6);
+
+playerHP = game.getPlayerHP();
+
+test = b == 2 or b == 3;
+
+test2 = playerHP >= 20 and b == 2 or b == 3;
+test3 = playerHP >= 20 and test;
+
+if: playerHP >= 20 and test {
+    game.displayMessage("Good stuff");
+}

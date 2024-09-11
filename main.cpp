@@ -2,41 +2,25 @@
 #include "Tokenizer.h"
 #include <map>
 #include "Expression.h"
+#include "Parser.h"
+#include <fstream>
+#include <functional>
 
-std::shared_ptr<Expression> evaluateStatement(std::vector<std::string> statement, int from, std::shared_ptr<Expression> previousExpression) {
-    for (int i = from; i < statement.size(); i++) {
-        std::string token = statement.at(i);
-        if (token == "=") {
-            std::shared_ptr<Expression> variableName = previousExpression;
-            std::shared_ptr<Expression> assignment = evaluateStatement(statement, i + 1, nullptr);
-            std::shared_ptr<AssignmentExpression> expr = std::shared_ptr<AssignmentExpression>(new AssignmentExpression(variableName, assignment));
-            return expr;
-        } else if (token == "+" || token == "-" || token == "*" || token == "/") {
-            std::shared_ptr<Expression> left = previousExpression;
-            std::shared_ptr<Expression> right = evaluateStatement(statement, i + 1, nullptr);
-            std::shared_ptr<MathExpression> expr = std::shared_ptr<MathExpression>(new MathExpression(left, right, token));
-            return expr;
-        } else if (token == ":") {
-            std::shared_ptr<Expression> function = previousExpression;
-            std::shared_ptr<Expression> parameters = evaluateStatement(statement, i + 1, nullptr);
-            std::shared_ptr<EngineFunctionExpression> expr = std::shared_ptr<EngineFunctionExpression>(new EngineFunctionExpression(function, parameters));
-            return expr;
-        } else if (token == ",") {
-            std::shared_ptr<ParameterExpression> parameters = std::shared_ptr<ParameterExpression>(
-                new ParameterExpression(previousExpression, evaluateStatement(statement, i + 1, previousExpression)));
-            return parameters;
-        } else {
-            std::shared_ptr<LiteralExpression> expr = std::shared_ptr<LiteralExpression>(new LiteralExpression(token));
-            return evaluateStatement(statement, i + 1, expr);
+int main(int argc, char* argv[]) {
+    std::string filePath = std::string(argv[1]);
+    std::ifstream in(filePath);
+    std::string rawProgram = "";
+    if (in.good()) {
+        std::string line;
+        while (getline(in, line)) {
+            if (stringStartsWith(line, "#")) continue;
+            line.erase(std::find_if(line.rbegin(), line.rend(), std::bind1st(std::not_equal_to<char>(), ' ')).base(), line.end());
+            rawProgram += line + " ";
         }
     }
+    rawProgram.erase(std::find_if(rawProgram.rbegin(), rawProgram.rend(), std::bind1st(std::not_equal_to<char>(), ' ')).base(), rawProgram.end());
 
-    return previousExpression;
-}
-
-int main() {
-    std::string test = "value = 1 + 2; giveAbility: \" te st\", value, 2;";
-    std::vector<std::string> tokens = Tokenizer::tokenize(test);
+    std::vector<std::string> tokens = Tokenizer::tokenize(rawProgram);
 
     std::vector<std::vector<std::string>> statements;
     std::vector<std::string> currentStatement;
@@ -48,10 +32,8 @@ int main() {
         }
     }
 
-    std::vector<std::shared_ptr<Expression>> expressions;
-    for (auto& statement : statements) {
-        expressions.push_back(evaluateStatement(statement, 0, nullptr));
-    }
+    Parser parser;
+    std::vector<EXPR> expressions = parser.parse(tokens);
 
     std::string assembly = "";
     for (auto& expression : expressions) {

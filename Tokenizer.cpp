@@ -2,6 +2,8 @@
 #include "Util.h"
 
 std::vector<std::string> Tokenizer::tokenize(std::string inScript) {
+    replaceAll(inScript, "()", "(NULL)");
+
     std::string script = "";
     bool replaceSpaces = false;
     for (auto symbol : inScript) {
@@ -28,12 +30,14 @@ std::vector<std::string> Tokenizer::tokenize(std::string inScript) {
         }
     }
 
+    tokens.push_back("EOF");
+
     return tokens;
 }
 
 std::vector<std::string> Tokenizer::splitOperators(std::string bareToken) {
     std::vector<std::string> operatorExpressionTokens;
-    std::vector<std::string> operators = { ".", "+", "-", "*", "/", "=", ";", ",", ":"};
+    std::vector<std::string> operators = { "!=", "==", ">=", "<=", "+", "-", "*", "/", "=", ";", ",", ":", "(", ")", "{", "}", ">", "<", "!" };
     for (std::string operatorString : operators) {
         if (bareToken.find(operatorString) != std::string::npos) {
             std::vector<std::string> tokens = splitString(bareToken, operatorString);
