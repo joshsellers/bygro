@@ -96,32 +96,6 @@ private:
     std::vector<std::shared_ptr<Expression>> parameters;
 };
 
-class BlockExpression : public Expression {
-public:
-    BlockExpression(std::shared_ptr<Expression> firstStatement)
-        : firstStatement(firstStatement)
-    {}
-
-    virtual std::string evaluate() {
-        return firstStatement->evaluate();
-    }
-private:
-    std::shared_ptr<Expression> firstStatement;
-};
-
-class StatementExpression : public Expression {
-public:
-    StatementExpression(std::shared_ptr<Expression> root)
-        : root(root)
-    {}
-
-    virtual std::string evaluate() {
-        std::string output = root->evaluate();
-    }
-private:
-    std::shared_ptr<Expression> root;
-};
-
 class EndIfExpression : public Expression {
 public:
     EndIfExpression(std::shared_ptr<Expression> previousStatement)
