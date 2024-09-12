@@ -13,4 +13,8 @@ void replaceAll(std::string& str, const std::string& from, const std::string& to
 bool stringStartsWith(std::string str, std::string start);
 bool stringEndsWith(std::string const& fullString, std::string const& ending);
 
+bool isNumber(std::string s);
+
+void rtrim(std::string& s);
+
 #endif

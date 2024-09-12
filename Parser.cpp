@@ -81,7 +81,7 @@ EXPR Parser::comp() {
     while (_currentToken == ">" || _currentToken == "<" || _currentToken == ">=" || _currentToken == "<=" || _currentToken == "==" || _currentToken == "!=") {
         std::string op = _currentToken;
         eat(_currentToken);
-        result = std::shared_ptr<BinaryExpression>(new BinaryExpression(result, term(), op));
+        result = std::shared_ptr<BinaryExpression>(new BinaryExpression(result, expression(), op));
     }
 
     return result;
@@ -110,6 +110,12 @@ EXPR Parser::bool_and() {
 }
 
 EXPR Parser::assignment() {
+    if (_currentToken == "break" || _currentToken == "continue") {
+        std::string controlFlowType = _currentToken;
+        eat(_currentToken);
+        return EXPR(new ControlFlowExpression(controlFlowType));
+    }
+
     auto variableName = bool_or();
 
     if (_currentToken == "=") {
@@ -147,15 +153,6 @@ EXPR Parser::assignment() {
     return std::shared_ptr<LiteralExpression>(new LiteralExpression(bool_or()->evaluate()));
 }
 
-EXPR Parser::gameFunction() {
-    auto gameKeyword = bool_or();
-
-    if (_currentToken == ".") {
-
-    }
-    return gameKeyword;
-}
-
 EXPR Parser::statement() {
     auto expr = assignment();
 
@@ -167,6 +164,10 @@ EXPR Parser::statement() {
 }
 
 EXPR Parser::endif() {
+    if (_currentToken == "}") {
+        eat("}");
+        return std::shared_ptr<EndIfExpression>(new EndIfExpression(nullptr));
+    }
     auto expr = statement();
 
     if (_currentToken == "}") {

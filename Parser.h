@@ -24,7 +24,6 @@ private:
     EXPR bool_and();
     EXPR bool_or();
     EXPR assignment();
-    EXPR gameFunction();
     EXPR statement();
     EXPR endif();
 };

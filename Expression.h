@@ -52,10 +52,14 @@ public:
     virtual std::string evaluate() {
         std::string variableString = variableName->evaluate();
         std::string outputString = ":ASSIGN:" + variableString;
+        std::string prefix = "";
         if (splitString(variableString, ":")[1] == "if") {
             outputString = ":IF";
+        } else if (splitString(variableString, ":")[1] == "while") {
+            outputString = ":WHILE";
+            prefix = "STWH:";
         }
-        return assignment->evaluate() + outputString;
+        return prefix + assignment->evaluate() + outputString;
     }
 private:
     std::shared_ptr<Expression> variableName;
@@ -103,10 +107,29 @@ public:
     {}
 
     virtual std::string evaluate() {
-        return previousStatement->evaluate() + ":ENDIF";
+        if (previousStatement != nullptr) {
+            return previousStatement->evaluate() + ":ENDIF";
+        } else {
+            return ":ENDIF";
+        }
     }
 private:
     std::shared_ptr<Expression> previousStatement;
+};
+
+class ControlFlowExpression : public Expression {
+public:
+    ControlFlowExpression(std::string type) 
+        : type(type)
+    {}
+
+    virtual std::string evaluate() {
+        if (type == "break") type = "BREAK";
+        else if (type == "continue") type = "CONT";
+        return ":" + type;
+    }
+private:
+    std::string type;
 };
 
 #endif
