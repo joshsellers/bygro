@@ -22,7 +22,7 @@ std::string Compiler::compile(std::string assembly) {
         {"or",          INSTRUCTION::OR},
         {"game.print",  INSTRUCTION::PRNT},
         {"STWH",        INSTRUCTION::STWH},
-        {"!=",         INSTRUCTION::NEQ}
+        {"!=",          INSTRUCTION::NEQ}
     };
 
     std::vector<int> bytecode;
