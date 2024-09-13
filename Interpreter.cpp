@@ -15,6 +15,14 @@ void Interpreter::interpret(std::vector<int> bytecode) {
             }
             push(value);
             i += 5;
+        } else if (inst == INSTRUCTION::STR) {
+            std::string str = "";
+            int strSize = bytecode.at(i + 1);
+            for (int j = 0; j < strSize; j++) {
+                str += (char)bytecode.at(i + 2 + j);
+            }
+            strPush(str);
+            i += strSize + 2;
         } else if (inst == INSTRUCTION::IF) {
             if (pop()) {
                 callStackPush(-1);
@@ -25,6 +33,7 @@ void Interpreter::interpret(std::vector<int> bytecode) {
                 for (int j = i + 1; j < bytecode.size(); j++) {
                     INSTRUCTION subInst = (INSTRUCTION)bytecode.at(j);
                     if (subInst == INSTRUCTION::LIT) j += 4;
+                    else if (subInst == INSTRUCTION::STR) skipStringLit(j, bytecode);
                     else if (subInst == INSTRUCTION::WHILE || subInst == INSTRUCTION::IF) ifWhileCount++;
                     else if (subInst == INSTRUCTION::ENDIF) endIfCount++;
                     if (endIfCount > ifWhileCount) {
@@ -49,6 +58,7 @@ void Interpreter::interpret(std::vector<int> bytecode) {
                 for (int j = i + 1; j < bytecode.size(); j++) {
                     INSTRUCTION subInst = (INSTRUCTION)bytecode.at(j);
                     if (subInst == INSTRUCTION::LIT) j += 4;
+                    else if (subInst == INSTRUCTION::STR) skipStringLit(j, bytecode);
                     else if (subInst == INSTRUCTION::WHILE || subInst == INSTRUCTION::IF) ifWhileCount++;
                     else if (subInst == INSTRUCTION::ENDIF) endIfCount++;
                     if (endIfCount > ifWhileCount) {
@@ -67,6 +77,7 @@ void Interpreter::interpret(std::vector<int> bytecode) {
 
                 int currentAddr = -1;
                 if (subInst == INSTRUCTION::LIT) j += 4;
+                else if (subInst == INSTRUCTION::STR) skipStringLit(j, bytecode);
                 else if (subInst == INSTRUCTION::WHILE || subInst == INSTRUCTION::IF) callStackPush(-1);
                 else if (subInst == INSTRUCTION::ENDIF) {
                     currentAddr = callStackPop();
@@ -87,9 +98,18 @@ void Interpreter::interpret(std::vector<int> bytecode) {
             int value = pop();
             _register[regAddr] = value;
             i++;
+        } else if (inst == INSTRUCTION::ASSIGNSTR) {
+            int regAddr = pop();
+            std::string str = strPop();
+            _strRegister[regAddr] = str;
+            i++;
         } else if (inst == INSTRUCTION::READ) {
             int regAddr = pop();
             push(_register[regAddr]);
+            i++;
+        } else if (inst == INSTRUCTION::READSTR) {
+            int regAddr = pop();
+            strPush(_strRegister[regAddr]);
             i++;
         } else if (inst == INSTRUCTION::ADD) {
             int right = pop();
@@ -110,6 +130,11 @@ void Interpreter::interpret(std::vector<int> bytecode) {
             int right = pop();
             int left = pop();
             push(left / right);
+            i++;
+        } else if (inst == INSTRUCTION::MOD) {
+            int right = pop();
+            int left = pop();
+            push(left % right);
             i++;
         } else if (inst == INSTRUCTION::GRT) {
             int right = pop();
@@ -156,9 +181,26 @@ void Interpreter::interpret(std::vector<int> bytecode) {
             push(-val);
             i++;
         } else if (inst == INSTRUCTION::PRNT) {
+            std::string val = strPop();
+            std::cout << val;
+            i++;
+        } else if (inst == INSTRUCTION::PRNTLN) {
+            std::string val = strPop();
+            std::cout << val << std::endl;
+            i++;
+        } else if (inst == INSTRUCTION::NUMPRNT) {
+            int val = pop();
+            std::cout << val;
+            i++;
+        } else if (inst == INSTRUCTION::NUMPRNTLN) {
             int val = pop();
             std::cout << val << std::endl;
             i++;
         }
     }
+}
+
+void Interpreter::skipStringLit(int& index, std::vector<int> bytecode) {
+    int strSize = bytecode.at(index + 1);
+    index += strSize + 1;
 }

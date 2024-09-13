@@ -1,5 +1,6 @@
 #include "Tokenizer.h"
 #include "Util.h"
+#include <iostream>
 
 std::vector<std::string> Tokenizer::tokenize(std::string inScript) {
     replaceAll(inScript, "()", "(NULL)");
@@ -9,8 +10,26 @@ std::vector<std::string> Tokenizer::tokenize(std::string inScript) {
     for (auto symbol : inScript) {
         if (replaceSpaces && symbol == ' ') {
             script += "RPLSPC";
-        } else {
-            script += std::string(1, symbol);
+        } else if (replaceSpaces && symbol != '"') {
+            for (int i = 4; i < operators.size(); i++) {
+                if (symbol == operators.at(i).at(0)) {
+                    script += "RPL" + std::to_string(i);
+                    break;
+                }
+            }
+        } 
+        
+        if (symbol != ' ' || !replaceSpaces) {
+            bool isOperator = false;
+            for (int i = 4; i < operators.size(); i++) {
+                if (symbol == operators.at(i).at(0)) {
+                    isOperator = true;
+                    break;
+                }
+            }
+            if (!isOperator || !replaceSpaces) {
+                script += std::string(1, symbol);
+            }
         }
         if (symbol == '"') replaceSpaces = !replaceSpaces;
     }
@@ -30,6 +49,12 @@ std::vector<std::string> Tokenizer::tokenize(std::string inScript) {
         }
     }
 
+    for (std::string& token : tokens) {
+        for (int i = 4; i < operators.size(); i++) {
+            replaceAll(token, "RPL" + std::to_string(i), operators.at(i));
+        }
+    }
+
     tokens.push_back("EOF");
 
     return tokens;
@@ -37,7 +62,6 @@ std::vector<std::string> Tokenizer::tokenize(std::string inScript) {
 
 std::vector<std::string> Tokenizer::splitOperators(std::string bareToken) {
     std::vector<std::string> operatorExpressionTokens;
-    std::vector<std::string> operators = { "!=", "==", ">=", "<=", "+", "-", "*", "/", "=", ";", ",", ":", "(", ")", "{", "}", ">", "<", "!" };
     for (std::string operatorString : operators) {
         if (bareToken.find(operatorString) != std::string::npos) {
             std::vector<std::string> tokens = splitString(bareToken, operatorString);

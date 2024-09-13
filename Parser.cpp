@@ -20,7 +20,7 @@ void Parser::eat(std::string expectedToken) {
         if (_currentTokenIndex >= _tokens.size()) return;
         _currentToken = _tokens.at(_currentTokenIndex);
     } else {
-        std::cout << "Unexpected token: " + _currentToken << std::endl;
+        std::cout << "ERROR: Unexpected token: " + _currentToken << std::endl;
     }
 }
 
@@ -46,13 +46,16 @@ EXPR Parser::factor() {
 EXPR Parser::term() {
     std::shared_ptr<Expression> result = factor();
 
-    while (_currentToken == "*" || _currentToken == "/") {
+    while (_currentToken == "*" || _currentToken == "/" || _currentToken == "%") {
         if (_currentToken == "*") {
             eat("*");
             result = std::shared_ptr<BinaryExpression>(new BinaryExpression(result, factor(), "*"));
-        } else if (_currentToken == "*") {
+        } else if (_currentToken == "/") {
             eat("/");
             result = std::shared_ptr<BinaryExpression>(new BinaryExpression(result, factor(), "/"));
+        } else if (_currentToken == "%") {
+            eat("%");
+            result = std::shared_ptr<BinaryExpression>(new BinaryExpression(result, factor(), "%"));
         }
     }
 

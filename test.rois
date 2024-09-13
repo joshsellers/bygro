@@ -1,20 +1,8 @@
-i = 0;
-while: i < 10 {
-    if: i == 5 {
-        i = i + 1;
-        b = 0;
-        while: b < 4 {
-            b = b + 1;
-            if: b == 3 {
-                game.print(b);
-            }
-        }
-        c = 3;
-    }
-    if: i == 3 {
-        game.print(i);
+i = 1;
+while: i < 5 * 5 + 1{
+    game.print(" *");
+    if: i % 5 == 0 and i != 0 {
+        game.println("");
     }
     i = i + 1;
 }
-game.print(100);
-game.print(i);

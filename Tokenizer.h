@@ -9,6 +9,7 @@ public:
     static std::vector<std::string> tokenize(std::string script);
 private:
     static std::vector<std::string> splitOperators(std::string bareToken);
+    static inline std::vector<std::string> operators = { "!=", "==", ">=", "<=", "+", "-", "*", "/", "=", ";", ",", ":", "(", ")", "{", "}", ">", "<", "!", "%" };
 };
 
 #endif

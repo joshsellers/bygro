@@ -11,6 +11,8 @@
 #include "Interpreter.h"
 
 int main(int argc, char* argv[]) {
+    bool debug = true;
+
     std::string filePath = std::string(argv[1]);
     std::ifstream in(filePath);
     std::string rawProgram = "";
@@ -48,7 +50,10 @@ int main(int argc, char* argv[]) {
         assembly.pop_back();
     }
 
-    std::cout << assembly << std::endl << std::endl;
+    if (debug) {
+        std::cout << "Assembly:" << std::endl;
+        std::cout << assembly << std::endl << std::endl;
+    }
     //return 0;
 
     std::string output = Compiler::compile(assembly);
@@ -78,10 +83,13 @@ int main(int argc, char* argv[]) {
     std::string testInString(ostrm.str());
     testIn.close();
 
-    for (int i = 0; i < testInString.size(); i++) {
-        std::cout << "0x" << std::hex << (int)testInString.at(i) << " " << std::dec;
+    if (debug) {
+        std::cout << std::endl << "Bytecode:" << std::endl;
+        for (int i = 0; i < testInString.size(); i++) {
+            std::cout << "0x" << std::hex << (int)testInString.at(i) << " " << std::dec;
+        }
+        std::cout << std::endl << std::endl;
     }
-    std::cout << std::endl;
 
     std::vector<int> bytecode;
     for (int i = 0; i < testInString.size(); i++) {
