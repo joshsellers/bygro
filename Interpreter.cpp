@@ -1,8 +1,9 @@
 #include "Interpreter.h"
 #include "Instructions.h"
 #include <iostream>
+#include "ModManager.h"
 
-void Interpreter::interpret(std::vector<int> bytecode) {
+int Interpreter::interpret(std::vector<int> bytecode) {
     int i = 0;
     while (i < bytecode.size()) {
         INSTRUCTION inst = (INSTRUCTION)bytecode.at(i);
@@ -93,6 +94,8 @@ void Interpreter::interpret(std::vector<int> bytecode) {
             while (i == -1) {
                 i = callStackPop();
             }
+        } else if (inst == INSTRUCTION::RET) {
+            return pop();
         } else if (inst == INSTRUCTION::ASSIGN) {
             int regAddr = pop();
             int value = pop();
@@ -196,8 +199,16 @@ void Interpreter::interpret(std::vector<int> bytecode) {
             int val = pop();
             std::cout << val << std::endl;
             i++;
+        } else if (inst == INSTRUCTION::CALL) {
+            std::string funcName = strPop();
+            push(interpret(ModManager::getFunction(funcName)));
+            i++;
+        } else if (inst == INSTRUCTION::POP) {
+            i++;
         }
     }
+
+    return 0;
 }
 
 void Interpreter::skipStringLit(int& index, std::vector<int> bytecode) {

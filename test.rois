@@ -1,8 +1,4 @@
-i = 1;
-while: i < 5 * 5 + 1{
-    game.print(" *");
-    if: i % 5 == 0 and i != 0 {
-        game.println("");
-    }
-    i = i + 1;
-}
+game.println(1, "test");
+
+a = game.pop();
+game.numPrintln(a+1);

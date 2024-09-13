@@ -131,7 +131,9 @@
     <ClCompile Include="Compiler.cpp" />
     <ClCompile Include="Interpreter.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="ModManager.cpp" />
     <ClCompile Include="Parser.cpp" />
+    <ClCompile Include="Program.cpp" />
     <ClCompile Include="Tokenizer.cpp" />
     <ClCompile Include="Util.cpp" />
   </ItemGroup>
@@ -140,7 +142,9 @@
     <ClInclude Include="Expression.h" />
     <ClInclude Include="Instructions.h" />
     <ClInclude Include="Interpreter.h" />
+    <ClInclude Include="ModManager.h" />
     <ClInclude Include="Parser.h" />
+    <ClInclude Include="Program.h" />
     <ClInclude Include="Tokenizer.h" />
     <ClInclude Include="Util.h" />
   </ItemGroup>

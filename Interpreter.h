@@ -6,7 +6,7 @@
 
 class Interpreter {
 public:
-    static void interpret(std::vector<int> bytecode);
+    static int interpret(std::vector<int> bytecode);
 private:
     static inline const int MAX_STACK = 128;
     static inline int _stackSize;

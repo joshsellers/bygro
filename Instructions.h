@@ -32,7 +32,10 @@ enum class INSTRUCTION {
     PRNTLN    = 0x1B,
     NUMPRNT   = 0x1C,
     NUMPRNTLN = 0x1D,
-    MOD       = 0x1E
+    MOD       = 0x1E,
+    RET       = 0x1F,
+    CALL      = 0x20,
+    POP       = 0x21
 };
 
 #endif

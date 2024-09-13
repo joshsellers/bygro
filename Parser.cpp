@@ -117,6 +117,9 @@ EXPR Parser::assignment() {
         std::string controlFlowType = _currentToken;
         eat(_currentToken);
         return EXPR(new ControlFlowExpression(controlFlowType));
+    } else if (_currentToken == "return") {
+        eat("return");
+        return EXPR(new ReturnExpression(bool_or()));
     }
 
     auto variableName = bool_or();

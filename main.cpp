@@ -1,101 +1,65 @@
 #include <iostream>
-#include "Tokenizer.h"
-#include <map>
-#include "Expression.h"
-#include "Parser.h"
-#include <fstream>
-#include <functional>
-#include "Compiler.h"
-#include <filesystem>
+
 #include <sstream>
 #include "Interpreter.h"
+#include "Util.h"
+#include <fstream>
+#include "Program.h"
+#include "ModManager.h"
+
+const std::string VERSION = "1.1";
 
 int main(int argc, char* argv[]) {
-    bool debug = true;
+    std::cout << "bygro v" + VERSION << std::endl << std::endl;
+
+    bool internalDebug = false;
+    bool debug = false;
+    bool testBuild = false;
+
+    if (argc == 3 && argv[2] == std::string("--d")) debug = true;
+    else if (argc == 3 && argv[2] == std::string("--t")) testBuild = true;
+    else if (argc == 4 && argv[2] == std::string("--d") && argv[3] == std::string("--t")) {
+        debug = true;
+        testBuild = true;
+    }
 
     std::string filePath = std::string(argv[1]);
-    std::ifstream in(filePath);
-    std::string rawProgram = "";
-    if (in.good()) {
-        std::string line;
-        while (getline(in, line)) {
-            if (stringStartsWith(line, "#")) continue;
-            rtrim(line);
-            rawProgram += line + " ";
+
+    if (!testBuild) {
+        Program program;
+        program.loadAndCompile(filePath, debug);
+    } else { 
+        ModManager::loadFunctions(debug);
+
+        std::cout << "Executing program" << std::endl << std::endl;
+        int retVal = Interpreter::interpret(ModManager::getFunction(filePath));
+
+        std::cout << std::endl << std::endl << "Program returned: " << std::endl << retVal;
+    }
+
+    if (internalDebug) {
+        std::string outputPath = splitString(filePath, ".")[0] + ".rf";
+        std::ifstream testIn(outputPath, std::ios::binary);
+        std::ostringstream ostrm;
+        ostrm << testIn.rdbuf();
+        std::string testInString(ostrm.str());
+        testIn.close();
+
+        if (debug) {
+            std::cout << std::endl << "Bytecode:" << std::endl;
+            for (int i = 0; i < testInString.size(); i++) {
+                std::cout << "0x" << std::hex << (int)testInString.at(i) << " " << std::dec;
+            }
+            std::cout << std::endl << std::endl;
         }
-    }
-    rtrim(rawProgram);
 
-    std::vector<std::string> tokens = Tokenizer::tokenize(rawProgram);
-
-    std::vector<std::vector<std::string>> statements;
-    std::vector<std::string> currentStatement;
-    for (std::string token : tokens) {
-        if (token != ";") currentStatement.push_back(token);
-        else {
-            statements.push_back(currentStatement);
-            currentStatement.clear();
-        }
-    }
-
-    Parser parser;
-    std::vector<EXPR> expressions = parser.parse(tokens);
-
-    std::string assembly = "";
-    for (auto& expression : expressions) {
-        assembly += expression->evaluate() + ":";
-    }
-    replaceAll(assembly, "::", ":");
-    if (stringEndsWith(assembly, ":")) {
-        assembly.pop_back();
-    }
-
-    if (debug) {
-        std::cout << "Assembly:" << std::endl;
-        std::cout << assembly << std::endl << std::endl;
-    }
-    //return 0;
-
-    std::string output = Compiler::compile(assembly);
-
-    std::string outputPath = splitString(filePath, ".")[0] + ".rf";
-    try {
-        if (!std::filesystem::remove(outputPath)) {
-            std::cout << "Could not replace output file" << std::endl;
-        }
-    } catch (const std::filesystem::filesystem_error& err) {
-        std::cout << "Could not replace output file:\n" << err.what() << std::endl;
-    }
-
-    try {
-        std::ofstream out(outputPath, std::ios::binary);
-        out << output;
-        out.close();
-    } catch (std::exception ex) {
-        std::cout << "Error writing to output file:\n" << ex.what() << std::endl;
-    }
-
-    std::cout << "Build successful" << std::endl;
-
-    std::ifstream testIn(outputPath, std::ios::binary);
-    std::ostringstream ostrm;
-    ostrm << testIn.rdbuf();
-    std::string testInString(ostrm.str());
-    testIn.close();
-
-    if (debug) {
-        std::cout << std::endl << "Bytecode:" << std::endl;
+        std::vector<int> bytecode;
         for (int i = 0; i < testInString.size(); i++) {
-            std::cout << "0x" << std::hex << (int)testInString.at(i) << " " << std::dec;
+            bytecode.push_back((int)testInString.at(i));
         }
-        std::cout << std::endl << std::endl;
-    }
 
-    std::vector<int> bytecode;
-    for (int i = 0; i < testInString.size(); i++) {
-        bytecode.push_back((int)testInString.at(i));
+        std::cout << "Executing program" << std::endl << std::endl;
+        int retVal = Interpreter::interpret(bytecode);
+        std::cout << std::endl << std::endl << "Program returned: " << std::endl << retVal;
     }
-
-    std::cout << "Executing program" << std::endl << std::endl;
-    Interpreter::interpret(bytecode);
 }

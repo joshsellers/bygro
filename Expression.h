@@ -132,4 +132,17 @@ private:
     std::string type;
 };
 
+class ReturnExpression : public Expression {
+public:
+    ReturnExpression(std::shared_ptr<Expression> returnedExpression) 
+        : returnedExpression(returnedExpression)
+    {}
+
+    virtual std::string evaluate() {
+        return returnedExpression->evaluate() + ":RETURN";
+    }
+private:
+    std::shared_ptr<Expression> returnedExpression;
+};
+
 #endif
