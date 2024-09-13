@@ -2,6 +2,7 @@
 #include "Instructions.h"
 #include <iostream>
 #include "ModManager.h"
+#include "Util.h"
 
 int Interpreter::interpret(std::vector<int> bytecode) {
     int i = 0;
@@ -14,7 +15,7 @@ int Interpreter::interpret(std::vector<int> bytecode) {
                 int byte = bytecode.at((i + 1) + j);
                 value += byte << (j * 8);
             }
-            push(value);
+            push((float)value);
             i += 5;
         } else if (inst == INSTRUCTION::STR) {
             std::string str = "";
@@ -25,7 +26,7 @@ int Interpreter::interpret(std::vector<int> bytecode) {
             strPush(str);
             i += strSize + 2;
         } else if (inst == INSTRUCTION::IF) {
-            if (pop()) {
+            if ((int)pop()) {
                 callStackPush(-1);
                 i++;
             } else {
@@ -50,7 +51,7 @@ int Interpreter::interpret(std::vector<int> bytecode) {
                 i = addr;
             }
         } else if (inst == INSTRUCTION::WHILE) {
-            int test = pop();
+            int test = (int)pop();
             if (test) {
                 i++;
             } else {
@@ -97,41 +98,41 @@ int Interpreter::interpret(std::vector<int> bytecode) {
         } else if (inst == INSTRUCTION::RET) {
             return pop();
         } else if (inst == INSTRUCTION::ASSIGN) {
-            int regAddr = pop();
-            int value = pop();
+            int regAddr = (int)pop();
+            float value = pop();
             _register[regAddr] = value;
             i++;
         } else if (inst == INSTRUCTION::ASSIGNSTR) {
-            int regAddr = pop();
+            int regAddr = (int)pop();
             std::string str = strPop();
             _strRegister[regAddr] = str;
             i++;
         } else if (inst == INSTRUCTION::READ) {
-            int regAddr = pop();
+            int regAddr = (int)pop();
             push(_register[regAddr]);
             i++;
         } else if (inst == INSTRUCTION::READSTR) {
-            int regAddr = pop();
+            int regAddr = (int)pop();
             strPush(_strRegister[regAddr]);
             i++;
         } else if (inst == INSTRUCTION::ADD) {
-            int right = pop();
-            int left = pop();
+            float right = pop();
+            float left = pop();
             push(left + right);
             i++;
         } else if (inst == INSTRUCTION::SUB) {
-            int right = pop();
-            int left = pop();
+            float right = pop();
+            float left = pop();
             push(left - right);
             i++;
         } else if (inst == INSTRUCTION::MUL) {
-            int right = pop();
-            int left = pop();
+            float right = pop();
+            float left = pop();
             push(left * right);
             i++;
         } else if (inst == INSTRUCTION::DIV) {
-            int right = pop();
-            int left = pop();
+            float right = pop();
+            float left = pop();
             push(left / right);
             i++;
         } else if (inst == INSTRUCTION::MOD) {
@@ -140,47 +141,47 @@ int Interpreter::interpret(std::vector<int> bytecode) {
             push(left % right);
             i++;
         } else if (inst == INSTRUCTION::GRT) {
-            int right = pop();
-            int left = pop();
-            push(left > right);
+            float right = pop();
+            float left = pop();
+            push((int)(left > right));
             i++;
         } else if (inst == INSTRUCTION::LSS) {
-            int right = pop();
-            int left = pop();
-            push(left < right);
+            float right = pop();
+            float left = pop();
+            push((int)(left < right));
             i++;
         } else if (inst == INSTRUCTION::GRE) {
-            int right = pop();
-            int left = pop();
-            push(left >= right);
+            float right = pop();
+            float left = pop();
+            push((int)(left >= right));
             i++;
         } else if (inst == INSTRUCTION::LSE) {
-            int right = pop();
-            int left = pop();
-            push(left <= right);
+            float right = pop();
+            float left = pop();
+            push((int)(left <= right));
             i++;
         } else if (inst == INSTRUCTION::EQL) {
-            int right = pop();
-            int left = pop();
-            push(left == right);
+            float right = pop();
+            float left = pop();
+            push((int)(left == right));
             i++;
         } else if (inst == INSTRUCTION::NEQ) {
-            int right = pop();
-            int left = pop();
-            push(left != right);
+            float right = pop();
+            float left = pop();
+            push((int)(left != right));
             i++;
         } else if (inst == INSTRUCTION::AND) {
-            int right = pop();
-            int left = pop();
-            push(left && right);
+            int right = (int)pop();
+            int left = (int)pop();
+            push((int)(left && right));
             i++;
         } else if (inst == INSTRUCTION::OR) {
-            int right = pop();
-            int left = pop();
-            push(left || right);
+            int right = (int)pop();
+            int left = (int)pop();
+            push((int)(left || right));
             i++;
         } else if (inst == INSTRUCTION::SGN) {
-            int val = pop();
+            float val = pop();
             push(-val);
             i++;
         } else if (inst == INSTRUCTION::PRNT) {
@@ -192,11 +193,11 @@ int Interpreter::interpret(std::vector<int> bytecode) {
             std::cout << val << std::endl;
             i++;
         } else if (inst == INSTRUCTION::NUMPRNT) {
-            int val = pop();
+            float val = pop();
             std::cout << val;
             i++;
         } else if (inst == INSTRUCTION::NUMPRNTLN) {
-            int val = pop();
+            float val = pop();
             std::cout << val << std::endl;
             i++;
         } else if (inst == INSTRUCTION::CALL) {
@@ -204,6 +205,11 @@ int Interpreter::interpret(std::vector<int> bytecode) {
             push(interpret(ModManager::getFunction(funcName)));
             i++;
         } else if (inst == INSTRUCTION::POP) {
+            i++;
+        } else if (inst == INSTRUCTION::RAND) {
+            float max = pop();
+            float min = pop();
+            push(randomInt(min, max));
             i++;
         }
     }

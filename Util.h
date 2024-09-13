@@ -17,4 +17,8 @@ bool isNumber(std::string s);
 
 void rtrim(std::string& s);
 
+int randomInt(int min, int max);
+
+long long currentTimeMillis();
+
 #endif

@@ -7,7 +7,7 @@
 #include "Program.h"
 #include "ModManager.h"
 
-const std::string VERSION = "1.1";
+const std::string VERSION = "1.3";
 
 int main(int argc, char* argv[]) {
     std::cout << "bygro v" + VERSION << std::endl << std::endl;
@@ -31,6 +31,7 @@ int main(int argc, char* argv[]) {
     } else { 
         ModManager::loadFunctions(debug);
 
+        srand(currentTimeMillis());
         std::cout << "Executing program" << std::endl << std::endl;
         int retVal = Interpreter::interpret(ModManager::getFunction(filePath));
 
@@ -58,6 +59,7 @@ int main(int argc, char* argv[]) {
             bytecode.push_back((int)testInString.at(i));
         }
 
+        srand(currentTimeMillis());
         std::cout << "Executing program" << std::endl << std::endl;
         int retVal = Interpreter::interpret(bytecode);
         std::cout << std::endl << std::endl << "Program returned: " << std::endl << retVal;

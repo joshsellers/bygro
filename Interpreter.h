@@ -10,14 +10,14 @@ public:
 private:
     static inline const int MAX_STACK = 128;
     static inline int _stackSize;
-    static inline int _stack[MAX_STACK]; 
+    static inline float _stack[MAX_STACK]; 
 
-    static void push(int value) {
+    static void push(float value) {
         assert(_stackSize < MAX_STACK);
         _stack[_stackSize++] = value;
     }
 
-    static int pop() {
+    static float pop() {
         assert(_stackSize > 0);
         return _stack[--_stackSize];
     }
@@ -48,7 +48,7 @@ private:
     }
 
     static inline const int MAX_VARIABLES = 256;
-    static inline int _register[MAX_VARIABLES];
+    static inline float _register[MAX_VARIABLES];
     static inline std::string _strRegister[MAX_VARIABLES];
 
 

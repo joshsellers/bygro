@@ -1,4 +1,14 @@
-game.println(1, "test");
+randNumber = random(0, 10);
 
-a = game.pop();
-game.numPrintln(a+1);
+i = 0;
+while: i < 100 {
+    randNumber = random(0, 10);
+    if: randNumber == 0 {
+        println("yes");
+    }
+    if: randNumber != 0 {
+        println("no");
+    }
+
+    i = i + 1;
+}

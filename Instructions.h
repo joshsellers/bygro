@@ -35,7 +35,8 @@ enum class INSTRUCTION {
     MOD       = 0x1E,
     RET       = 0x1F,
     CALL      = 0x20,
-    POP       = 0x21
+    POP       = 0x21,
+    RAND      = 0x22
 };
 
 #endif

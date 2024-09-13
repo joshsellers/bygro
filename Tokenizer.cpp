@@ -53,6 +53,11 @@ std::vector<std::string> Tokenizer::tokenize(std::string inScript) {
         for (int i = 4; i < operators.size(); i++) {
             replaceAll(token, "RPL" + std::to_string(i), operators.at(i));
         }
+
+        if (!stringStartsWith(token, "\"")) {
+            replaceAll(token, "true", "1");
+            replaceAll(token, "false", "0");
+        }
     }
 
     tokens.push_back("EOF");

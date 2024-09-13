@@ -25,12 +25,13 @@ std::string Compiler::compile(std::string assembly) {
         {"or",                INSTRUCTION::OR},
         {"STWH",              INSTRUCTION::STWH},
         {"!=",                INSTRUCTION::NEQ},
-        {"game.print",        INSTRUCTION::PRNT},
-        {"game.println",      INSTRUCTION::PRNTLN},
-        {"game.numPrint",     INSTRUCTION::NUMPRNT},
-        {"game.numPrintln",   INSTRUCTION::NUMPRNTLN},
-        {"game.runFunction",  INSTRUCTION::CALL},
-        {"game.pop",          INSTRUCTION::POP}
+        {"print",             INSTRUCTION::PRNT},
+        {"println",           INSTRUCTION::PRNTLN},
+        {"numPrint",          INSTRUCTION::NUMPRNT},
+        {"numPrintln",        INSTRUCTION::NUMPRNTLN},
+        {"runFunction",       INSTRUCTION::CALL},
+        {"pop",               INSTRUCTION::POP},
+        {"random",            INSTRUCTION::RAND}
     };
 
     std::vector<int> bytecode;
