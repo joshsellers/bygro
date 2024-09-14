@@ -211,6 +211,8 @@ int Interpreter::interpret(std::vector<int> bytecode) {
             float min = pop();
             push(randomInt(min, max));
             i++;
+        } else {
+            i++;
         }
     }
 

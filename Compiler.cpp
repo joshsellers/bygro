@@ -31,7 +31,16 @@ std::string Compiler::compile(std::string assembly) {
         {"numPrintln",        INSTRUCTION::NUMPRNTLN},
         {"runFunction",       INSTRUCTION::CALL},
         {"pop",               INSTRUCTION::POP},
-        {"random",            INSTRUCTION::RAND}
+        {"random",            INSTRUCTION::RAND},
+        {"displayMessage",    INSTRUCTION::DMSG},
+        {"displayNumber",     INSTRUCTION::NUMDMSG},
+        {"displayDebugMessage", INSTRUCTION::DMSGDEBUG},
+        {"displayWarningMessage", INSTRUCTION::DMSGWARN},
+        {"displayErrorMessage", INSTRUCTION::DMSGERR},
+        {"setPlayerHp",       INSTRUCTION::SPLHP},
+        {"getPlayerHp",       INSTRUCTION::GPLHP},
+        {"setPlayerMaxHp",    INSTRUCTION::SPLMAXHP},
+        {"getPlayerMaxHp",    INSTRUCTION::GPLMAXHP}
     };
 
     std::vector<int> bytecode;
