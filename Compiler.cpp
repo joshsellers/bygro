@@ -37,12 +37,15 @@ std::string Compiler::compile(std::string assembly) {
         {"displayDebugMessage",     INSTRUCTION::DMSGDEBUG},
         {"displayWarningMessage",   INSTRUCTION::DMSGWARN},
         {"displayErrorMessage",     INSTRUCTION::DMSGERR},
-        {"setPlayerHp",             INSTRUCTION::SPLHP},
-        {"getPlayerHp",             INSTRUCTION::GPLHP},
-        {"setPlayerMaxHp",          INSTRUCTION::SPLMAXHP},
-        {"getPlayerMaxHp",          INSTRUCTION::GPLMAXHP},
+        {"player.setHp",            INSTRUCTION::SPLHP},
+        {"player.getHp",            INSTRUCTION::GPLHP},
+        {"player.setMaxHp",         INSTRUCTION::SPLMAXHP},
+        {"player.getMaxHp",         INSTRUCTION::GPLMAXHP},
         {"playSound",               INSTRUCTION::PLAYSOUND},
-        {"player.fireProjectile",   INSTRUCTION::PLSHOOT}
+        {"player.fireProjectile",   INSTRUCTION::PLSHOOT},
+        {"player.giveItem",         INSTRUCTION::PLGIVEITEM},
+        {"player.hasItem",          INSTRUCTION::PLHASITEM},
+        {"player.weaponIsLoaded",   INSTRUCTION::PLWEAPONLOADED}
     };
 
     std::vector<int> bytecode;
