@@ -1,14 +1,9 @@
-randNumber = random(0, 10);
-
 i = 0;
-while: i < 100 {
-    randNumber = random(0, 10);
-    if: randNumber == 0 {
-        println("yes");
+while: i < 10 {
+    if: i == 5 {
+        return i;
     }
-    if: randNumber != 0 {
-        println("no");
-    }
-
     i = i + 1;
 }
+
+return 100;

@@ -96,6 +96,17 @@ int Interpreter::interpret(std::vector<int> bytecode) {
                 i = callStackPop();
             }
         } else if (inst == INSTRUCTION::RET) {
+            for (int j = i + 1; j < bytecode.size(); j++) {
+                INSTRUCTION subInst = (INSTRUCTION)bytecode.at(j);
+
+                int currentAddr = -1;
+                if (subInst == INSTRUCTION::LIT) j += 4;
+                else if (subInst == INSTRUCTION::STR) skipStringLit(j, bytecode);
+                else if (subInst == INSTRUCTION::WHILE || subInst == INSTRUCTION::IF) callStackPush(-1);
+                else if (subInst == INSTRUCTION::ENDIF) {
+                    callStackPop();
+                }
+            }
             return pop();
         } else if (inst == INSTRUCTION::ASSIGN) {
             int regAddr = (int)pop();
