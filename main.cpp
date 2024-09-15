@@ -7,7 +7,7 @@
 #include "Program.h"
 #include "ModManager.h"
 
-const std::string VERSION = "1.5";
+const std::string VERSION = "1.6";
 
 int main(int argc, char* argv[]) {
     std::cout << "bygro v" + VERSION << std::endl << std::endl;

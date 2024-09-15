@@ -42,7 +42,7 @@ std::string Compiler::compile(std::string assembly) {
         {"setPlayerMaxHp",          INSTRUCTION::SPLMAXHP},
         {"getPlayerMaxHp",          INSTRUCTION::GPLMAXHP},
         {"playSound",               INSTRUCTION::PLAYSOUND},
-        {"item.fireProjectile",     INSTRUCTION::PLSHOOT}
+        {"player.fireProjectile",   INSTRUCTION::PLSHOOT}
     };
 
     std::vector<int> bytecode;
