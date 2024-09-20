@@ -1,9 +1,6 @@
-i = 0;
-while: i < 10 {
-    if: i == 5 {
-        return i;
-    }
-    i = i + 1;
-}
+weaponLoaded = player.weaponIsLoaded();
 
-return 100;
+if: weaponLoaded {
+    playSound("ar");
+    player.fireProjectile("Test Ammo", 1);
+}
