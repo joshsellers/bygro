@@ -48,7 +48,8 @@ std::string Compiler::compile(std::string assembly) {
         {"player.weaponIsLoaded",       INSTRUCTION::PLWEAPONLOADED},
         {"player.addEffect",            INSTRUCTION::PLADDEFFECT},
         {"player.addAbility",           INSTRUCTION::PLADDABILITY},
-        {"player.setAbilityParameter",  INSTRUCTION::PLSETABILITYPARAM}
+        {"player.setAbilityParameter",  INSTRUCTION::PLSETABILITYPARAM},
+        {"player.getAbilityParameter",  INSTRUCTION::PLGETABILITYPARAM}
     };
 
     std::vector<int> bytecode;
