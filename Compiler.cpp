@@ -49,7 +49,9 @@ std::string Compiler::compile(std::string assembly) {
         {"player.addEffect",            INSTRUCTION::PLADDEFFECT},
         {"player.addAbility",           INSTRUCTION::PLADDABILITY},
         {"player.setAbilityParameter",  INSTRUCTION::PLSETABILITYPARAM},
-        {"player.getAbilityParameter",  INSTRUCTION::PLGETABILITYPARAM}
+        {"player.getAbilityParameter",  INSTRUCTION::PLGETABILITYPARAM},
+        {"player.hasAbility",           INSTRUCTION::PLHASABILITY},
+        {"player.hasEffect",            INSTRUCTION::PLHASEFFECT}
     };
 
     std::vector<int> bytecode;
